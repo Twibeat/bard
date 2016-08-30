@@ -12,7 +12,7 @@ import musicUtil
 
 class preprocessor(object):
 	""" 클래스 너무 개판 애매한 객체지향 보다는 걍 모듈로 빼는게 나을지도 모르겠다. 매개변수 터지지만"""
-	def __init__(self, sheet, maxlen = 5):
+	def __init__(self, sheet, maxlen = 8):
 		"""set으로 중복없애고 리스트 만들어 정렬(chord단위)
 		이렇게 되면 맨뒤에 의문사나 .같은게 문제가됨 ?같은거 없애봐라 -> 코드는 상관없징
 		chords는 나중에 는 전체 코드 구성으로 바꺼야 됨 
@@ -22,8 +22,8 @@ class preprocessor(object):
 		self.chord_indices = dict((w, i) for i, w in enumerate(self.chords))
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
 		
-		self.maxlen = maxlen
-		step = 2
+		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은)
+		step = 3 # 시작위치 넘어 갈 순서
 		self.sentences = []
 		self.next_chords = []
 		for i in range(0, len(self.chords) - self.maxlen, step):
@@ -54,7 +54,7 @@ def generateSheet(arg, generated, sentence, model):
 		x[0, t, arg.chord_indices[chord]] = 1
 
 	preds = model.predict(x, verbose=0)[0]
-	next_index = sample(preds, 1.0)
+	next_index = sample(preds, 0.5)
 	next_chord = arg.indices_chord[next_index]
 	generated += next_chord
 
@@ -93,7 +93,7 @@ def sample(preds, temperature=1.0):
 
 if __name__ == "__main__":
 	
-	sheet, head = musicUtil.parse_midi("sample.mid")
+	sheet, head = musicUtil.parse_midi("twice_cheerup.mid")
 	#sheet = "G G B B G G B B G G B B G G B B G G B B G G B B A B B B A B B B G G B B A A D D G G B B E E B B G G G G G G G G G G B B G G B B A B B B A B B D G G B B A A D D G G B B E E B B G B A B G B A B G G G G G G G G G G B B A A D D G G B B E E B B G G B B G G B B"
 	#pp = preprocessor()
 	print sheet
@@ -104,13 +104,15 @@ if __name__ == "__main__":
 
 	sheet_split = sheet.split(' ')
 
-	for iteration in range(1,2):
+	for iteration in range(1,101):
 		print()
 		print("Iteration",iteration)
 
 		model.fit(x,y,verbose=0)
 
-		#이부분은 함수화 하는게 좋을거 같다.
+		"""이부분은 함수화 하는게 좋을거 같다.
+		그리고 랜덤으로 시작위치를 정하니까 좀 그런듯 
+		"""
 		start_index = random.randint(0, len(sheet_split) - pp.maxlen -1)
 		generated = ""
 		sentence = sheet_split[start_index :start_index + pp.maxlen]
@@ -119,14 +121,14 @@ if __name__ == "__main__":
 		sys.stdout.write(generated)
 
 		chords = generated
-		for i in range(100):#일단 반복은 sheet의 
+		for i in range(len(sheet_split)):#일단 반복은 sheet의 
 			next_chord = generateSheet(pp, generated, sentence, model)
 			chords += (next_chord + ' ')
 	print()
 
 
 	print chords.split(' ')[:-1]#마지막은 똥이 붙어서 빼야됨
-	musicUtil.out_midi("test.midi", head, chords.split(' ')[:-1])
+	musicUtil.out_midi("test_1.midi", head, chords.split(' ')[:-1])
 
 
 
