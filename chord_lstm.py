@@ -19,6 +19,7 @@ class preprocessor(object):
 		"""
 		split_sheet = sheet.split(' ')
 		self.chords = sorted(list(set(split_sheet)))
+		self.chords.remove('')	# ''가
 		self.chord_indices = dict((w, i) for i, w in enumerate(self.chords))
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
 		
@@ -104,7 +105,7 @@ if __name__ == "__main__":
 
 	sheet_split = sheet.split(' ')
 
-	for iteration in range(1,101):
+	for iteration in range(1,2):
 		print()
 		print("Iteration",iteration)
 
