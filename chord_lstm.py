@@ -17,9 +17,8 @@ class preprocessor(object):
 		이렇게 되면 맨뒤에 의문사나 .같은게 문제가됨 ?같은거 없애봐라 -> 코드는 상관없징
 		chords는 나중에 는 전체 코드 구성으로 바꺼야 됨 
 		"""
-		split_sheet = sheet.split(' ')
-		self.chords = sorted(list(set(split_sheet)))
-		self.chords.remove('')	# ''가
+
+		self.chords = sorted(list(set(sheet)))
 		self.chord_indices = dict((w, i) for i, w in enumerate(self.chords))
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
 		
@@ -28,8 +27,8 @@ class preprocessor(object):
 		self.sentences = []
 		self.next_chords = []
 		for i in range(0, len(self.chords) - self.maxlen, step):
-			self.sentences.append(split_sheet[i:i + self.maxlen])
-			self.next_chords.append(split_sheet[i  +self.maxlen])
+			self.sentences.append(sheet[i:i + self.maxlen])        
+			self.next_chords.append(sheet[i + self.maxlen])
 		
 	def onehotEncodig(self):
 		"""
@@ -48,26 +47,19 @@ class preprocessor(object):
 
 		return x,y
 
-def generateSheet(arg, generated, sentence, model):
+def generateSheet(arg, generated, model):
 	"""학습된 model에 의해서 chord를 생성"""
-	x = np.zeros((1,arg.maxlen, len(arg.chords)))
-	for t, chord in enumerate(sentence):
+	x = np.zeros((1, arg.maxlen, len(arg.chords)))
+	for t, chord in enumerate(generated):
 		x[0, t, arg.chord_indices[chord]] = 1
 
 	preds = model.predict(x, verbose=0)[0]
 	next_index = sample(preds, 0.5)
 	next_chord = arg.indices_chord[next_index]
-	generated += next_chord
 
-	sentence = sentence[1:] #첫번쨰 요소를 제거 	
-	sentence.append(next_chord)#새로운 단어를 추가한다.
-
-	#full_sentence.append(next_chord)#버그 보소 
-	
-	sys.stdout.write(next_chord + ' ')
-	sys.stdout.flush()
-
-	return next_chord
+	generated.append(next_chord)#새로운 단어를 추가한다.
+	#첫번쨰 요소를 제거 
+	return generated[1:], next_chord 
 
 def buildModel(maxlen, chords):
     print('Build model...')
@@ -89,9 +81,6 @@ def sample(preds, temperature=1.0):
     preds = exp_preds / np.sum(exp_preds)
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
-
-
-
 
 
 

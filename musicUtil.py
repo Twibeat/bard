@@ -10,25 +10,21 @@ def parse_midi(filename):
 	옥타브가 필요
 	"""
 	mid = converter.parse(filename)
-	stream1 = mid[0].stream()
-	stream2 = mid[0].stream()#다른 스트림에 대한 처리 필요
+	stream = mid[0].stream()#다른 스트림에 대한 처리 필요
 
 	header_size = 3 #header가 3개가 아닐수도 
-	stream_to_char =''
-
+	stream_to_list = []
 	"""
 	Note, Rest둘다 duration이 있다. 처리 필요 
+	each_item.duration.type형태로 길이 확인 가능 
 	"""
-	for each_item in stream1[header_size:]:
+	for each_item in stream[header_size:]:
 		if isinstance(each_item, note.Note):
-			stream_to_char += (each_item.name + ' ')#.name올 바꾸면 샵,플랫되는데 rest만 나온다...
-			print each_item.duration.type# 길이
+			stream_to_list.append(each_item.name + str(each_item.octave))
 		elif isinstance(each_item, note.Rest):
-			stream_to_char += (each_item.name + ' ')
-			print each_item.duration.type# 길이
-			
-	return stream_to_char, stream1[0:header_size]
+			stream_to_list.append(each_item.name)
 
+	return stream_to_list, stream[0:header_size]
 def out_midi(dir, head, chords):
 	"""생성된 char형태의 코드를 midi로 만들어줌"""
 	streams = stream.Stream()
@@ -70,7 +66,8 @@ def test_check_hierarchy(filename):
 			print "pitch: ",s.name
 
 if __name__ == "__main__":
-	char, st = parse_midi("twice_cheerup.mid")
+	char, st = parse_midi2("twice_cheerup.mid")
+	print char
 	#print char.split(' ')
 	#test_check_midi("twice_cheerup.mid")
 	#test_check_hierarchy("twice_cheerup.mid")
