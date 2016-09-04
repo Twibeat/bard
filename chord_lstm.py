@@ -17,13 +17,14 @@ class preprocessor(object):
 		이렇게 되면 맨뒤에 의문사나 .같은게 문제가됨 ?같은거 없애봐라 -> 코드는 상관없징
 		chords는 나중에 는 전체 코드 구성으로 바꺼야 됨 
 		"""
-
-		self.chords = sorted(list(set(sheet)))
+		self.chords = sorted(list(set(sheet)))#list(np.unique(np.array(sheet)))#
 		self.chord_indices = dict((w, i) for i, w in enumerate(self.chords))
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
-		
+		print self.chord_indices
+		print self.indices_chord
 		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
-		step = 3 # 시작위치 넘어 갈 순서
+		
+		step = 4 # 시작위치 넘어 갈 순서
 		self.sentences = []
 		self.next_chords = []
 		for i in range(0, len(self.chords) - self.maxlen, step):
@@ -54,7 +55,7 @@ def generateSheet(arg, generated, model):
 		x[0, t, arg.chord_indices[chord]] = 1
 
 	preds = model.predict(x, verbose=0)[0]
-	next_index = sample(preds, 0.5)
+	next_index = sample(preds,0.5)
 	next_chord = arg.indices_chord[next_index]
 
 	generated.append(next_chord)#새로운 단어를 추가한다.
@@ -74,14 +75,16 @@ def buildModel(maxlen, chords):
     return model
 
 def sample(preds, temperature=1.0):
-    # 이해 필요
+    """ 
+    float의 범위가 작아서 double(여기서는 float64)로 바꿈 
+	
+    """
     preds = np.asarray(preds).astype('float64')
     preds = np.log(preds) / temperature
+     평균을 구한다.
     exp_preds = np.exp(preds)
     preds = exp_preds / np.sum(exp_preds)
+    # 다항 분포를 구한다.
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
-
-
-
 

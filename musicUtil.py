@@ -1,30 +1,35 @@
 # _*_ coding: utf-8 _*_
 from music21 import *
-import nester
+from fractions import Fraction
 
 def parse_midi(filename):
 	"""
 	http://web.mit.edu/music21/doc/usersGuide/usersGuide_17_derivations.html	
-	sample.mid는 불러오면 Sore이고 이는 Part의 크기 2리스트 가됨
-	Part를 스트림으로 가져와서 출력이 가능 
-	옥타브가 필요
+	sample.mid는 불러오면 Sore이고 여러개의 Part로 구성된다. Part는 
+	midi파일에서 최초의 Voice를 찾는다.
 	"""
-	mid = converter.parse(filename)
-	stream = mid[0].stream()#다른 스트림에 대한 처리 필요
+	score = converter.parse(filename)
+	for part in score:
+		for voice in part:
+			if isinstance(voice, stream.Voice):
+				print "length: ", len(voice)
+				return make_list(voice)
 
+def make_list(stream):
+	"""
+	voice는 note의 스트림임
+	"""
 	header_size = 3 #header가 3개가 아닐수도 
 	stream_to_list = []
-	"""
-	Note, Rest둘다 duration이 있다. 처리 필요 
-	each_item.duration.type형태로 길이 확인 가능 
-	"""
+
 	for each_item in stream[header_size:]:
 		if isinstance(each_item, note.Note):
-			stream_to_list.append(each_item.name + str(each_item.octave))
+			stream_to_list.append(each_item.name + str(each_item.octave) + '/' + str(each_item.duration.quarterLength))
 		elif isinstance(each_item, note.Rest):
-			stream_to_list.append(each_item.name)
+			stream_to_list.append(each_item.name + '/' + str(each_item.duration.quarterLength))
 
 	return stream_to_list, stream[0:header_size]
+
 def out_midi(dir, head, chords):
 	"""생성된 char형태의 코드를 midi로 만들어줌"""
 	streams = stream.Stream()
@@ -32,13 +37,15 @@ def out_midi(dir, head, chords):
 		streams.append(h)
 
 	for chord in chords:
-		if chord == "rest":
-			n = note.Rest(chord)
-			n.duration.type = "eighth"
+		# 현재는 (음과 옥타브 / 음길이) 형태로 구분한다. 나누어 준다.
+		chord = chord.split('/', 1)
+		if chord[0] == "rest":
+			n = note.Rest(chord[0])
+			n = set_duration(n, chord[1])
 			streams.append(n)
-		elif chord is not '':# 추후에 버그 수정후 없앨것
-			n = note.Note(chord)
-			n.duration.type = "eighth"
+		else:
+			n = note.Note(chord[0])
+			n = set_duration(n, chord[1])
 			streams.append(n)
 
 	"""stream을 저장한다."""
@@ -47,27 +54,15 @@ def out_midi(dir, head, chords):
 	mf.write()
 	mf.close()
 
-def test_check_midi(filename):
-	midi = converter.parse(filename)
-	for part in midi:
-		nester.print_lol(part)
-
-def test_check_hierarchy(filename):
-	mid = converter.parse(filename)
-	streams = mid[0].stream()
+def set_duration(note, duration):
+	"""
+	무한 소수 같은건 (1/12) 분수로 표현되어서 이에 대한 처리를 해준다.
+	기본 모듈 중 하나인 Fraction(from fractions import Fration) 이용
+	"""
+	if duration.find('/') is not -1:
+		splited = duration.split('/')
+		note.duration.quarterLength = Fraction(int(splited[0]), int(splited[1]))
+	else:
+		note.duration.quarterLength = float(duration) 
+	return note
 	
-	header_size = 3
-	stream_to_char = ""
-
-	for s in streams[header_size:10]:
-		if isinstance(s, note.Note):
-			print "note: ", s.fullName
-		if isinstance(s, pitch.Pitch):
-			print "pitch: ",s.name
-
-if __name__ == "__main__":
-	char, st = parse_midi2("twice_cheerup.mid")
-	print char
-	#print char.split(' ')
-	#test_check_midi("twice_cheerup.mid")
-	#test_check_hierarchy("twice_cheerup.mid")
