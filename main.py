@@ -18,7 +18,8 @@ if __name__ == "__main__":
 
 		model.fit(x,y,verbose=0)
 
-		"""랜덤으로 시작위치를 정하니까 좀 그런듯 - 현재
+		"""
+		랜덤으로 시작위치를 정하니까 좀 그런듯 - 현재는 시작 위치를 기준으로 만든다.
 		"""
 		start_index = random.randint(0, len(sheet) - pp.maxlen -1)
 		#generated = sheet[start_index :start_index + pp.maxlen]

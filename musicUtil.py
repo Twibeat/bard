@@ -6,7 +6,7 @@ def parse_midi(filename):
 	"""
 	http://web.mit.edu/music21/doc/usersGuide/usersGuide_17_derivations.html	
 	sample.mid는 불러오면 Sore이고 여러개의 Part로 구성된다. Part는 
-	midi파일에서 최초의 Voice를 찾는다.
+	midi파일에서 최초의 Voice를 찾는다. => 문제의 여지가 있다. 항상 Voice에서 멜로디가 있는게 아니라서 
 	"""
 	score = converter.parse(filename)
 	for part in score:
@@ -48,6 +48,9 @@ def out_midi(dir, head, chords):
 			n = set_duration(n, chord[1])
 			streams.append(n)
 
+	write_stream(dir, streams)
+
+def write_stream(dir, streams):
 	"""stream을 저장한다."""
 	mf = midi.translate.streamToMidiFile(streams)
 	mf.open(dir,'wb')

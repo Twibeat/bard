@@ -81,7 +81,7 @@ def sample(preds, temperature=1.0):
     """
     preds = np.asarray(preds).astype('float64')
     preds = np.log(preds) / temperature
-     평균을 구한다.
+    # exㅔ평균을 구한다.
     exp_preds = np.exp(preds)
     preds = exp_preds / np.sum(exp_preds)
     # 다항 분포를 구한다.
