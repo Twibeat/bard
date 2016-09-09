@@ -5,6 +5,7 @@ from keras.layers import LSTM
 from keras.optimizers import RMSprop
 from keras.utils.data_utils import get_file
 import numpy as np
+
 import random
 import sys
 
@@ -22,15 +23,15 @@ class preprocessor(object):
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
 		print self.chord_indices
 		print self.indices_chord
-		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
 		
+		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
 		step = 4 # 시작위치 넘어 갈 순서
 		self.sentences = []
 		self.next_chords = []
 		for i in range(0, len(self.chords) - self.maxlen, step):
 			self.sentences.append(sheet[i:i + self.maxlen])        
 			self.next_chords.append(sheet[i + self.maxlen])
-		
+			
 	def onehotEncodig(self):
 		"""
 		다음의 형태로 만들어 줍니다.
@@ -55,7 +56,7 @@ def generateSheet(arg, generated, model):
 		x[0, t, arg.chord_indices[chord]] = 1
 
 	preds = model.predict(x, verbose=0)[0]
-	next_index = sample(preds,0.5)
+	next_index = sample(preds, 0.5)
 	next_chord = arg.indices_chord[next_index]
 
 	generated.append(next_chord)#새로운 단어를 추가한다.
@@ -65,7 +66,8 @@ def generateSheet(arg, generated, model):
 def buildModel(maxlen, chords):
     print('Build model...')
     model = Sequential()
-    model.add(LSTM(128, input_shape=(maxlen, len(chords))))
+    model.add(LSTM(128, input_shape=(maxlen, len(chords)),return_sequences=True))
+    model.add(LSTM(128, return_sequences=False))#lstm을 하나 더 추가하니 많이 느려짐
     model.add(Dense(len(chords)))
     model.add(Activation('softmax'))
 

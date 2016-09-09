@@ -4,15 +4,23 @@ import random
 from chord_lstm import *
 
 if __name__ == "__main__":
+	# midi에서 멜로디를 추출합니다.
+	input_file_dir = "twice_cheerup.mid"
+	input_file_name = input_file_dir.split('.')[0]
+	sheet, head = musicUtil.parse_midi(input_file_dir)
 	
-	sheet, head = musicUtil.parse_midi("original.midi")
-	
+	#추출한 멜로디 파일로 만들어 저장합니다.
+	musicUtil.out_midi(input_file_name + "_first_voice.midi", head, sheet)
+
+	#멜로디에서 특징을 뽑아내고 학습에 적절한 형태로 만듭니다.
 	print sheet
 	pp = preprocessor(sheet)
 	x,y = pp.onehotEncodig()
 
+	#데이터에 맞는 모델을 만듭니다.
 	model = buildModel(pp.maxlen, pp.chords)
 
+	#학습 - 멜로디 생성을 반복합니다.
 	for iteration in range(0,101):
 		print("Iteration",iteration)
 
@@ -30,9 +38,12 @@ if __name__ == "__main__":
 			generated, next_chord = generateSheet(pp, generated, model)
 			chords.append(next_chord)
 		#print chords
+
+		#10번에 한번씩 
 		if (iteration % 10) == 0:
-			filename = 'test_iter' + str(iteration) + '.midi'
-			musicUtil.out_midi(filename, head, chords)
+			print("Write file")
+			output_file_name = input_file_name + '_iter' + str(iteration) + '.midi'
+			musicUtil.out_midi(output_file_name, head, chords)
 
 
 
