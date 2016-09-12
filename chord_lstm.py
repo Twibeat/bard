@@ -6,14 +6,27 @@ from keras.optimizers import RMSprop
 from keras.utils.data_utils import get_file
 import numpy as np
 
-import random
-import sys
-
 import musicUtil 
 
 class preprocessor(object):
-	""" 클래스 너무 개판 애매한 객체지향 보다는 걍 모듈로 빼는게 나을지도 모르겠다. 매개변수 터지지만"""
+	""" 클래스 너무 개판 애매한 객체지향 보다는 걍 모듈로 빼는게 나을지도 모르겠다. 매개변수 터지지만
+		=>매개변수 터지는건 너무도 큰 고통임
+	"""
 	def __init__(self, sheet, maxlen = 16):
+		
+		self.preprocess(sheet)
+		"""
+		이부분도 함수로 만들것 
+		"""
+		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
+		step = 4 # 시작위치 넘어 갈 순서
+		self.sentences = []
+		self.next_chords = []
+		for i in range(0, len(self.chords) - self.maxlen, step):
+			self.sentences.append(sheet[i:i + self.maxlen])        
+			self.next_chords.append(sheet[i + self.maxlen])
+
+	def preprocess(self,sheet):
 		"""set으로 중복없애고 리스트 만들어 정렬(chord단위)
 		이렇게 되면 맨뒤에 의문사나 .같은게 문제가됨 ?같은거 없애봐라 -> 코드는 상관없징
 		chords는 나중에 는 전체 코드 구성으로 바꺼야 됨 
@@ -23,15 +36,7 @@ class preprocessor(object):
 		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
 		print self.chord_indices
 		print self.indices_chord
-		
-		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
-		step = 4 # 시작위치 넘어 갈 순서
-		self.sentences = []
-		self.next_chords = []
-		for i in range(0, len(self.chords) - self.maxlen, step):
-			self.sentences.append(sheet[i:i + self.maxlen])        
-			self.next_chords.append(sheet[i + self.maxlen])
-			
+
 	def onehotEncodig(self):
 		"""
 		다음의 형태로 만들어 줍니다.
@@ -47,7 +52,7 @@ class preprocessor(object):
 				x[number, index, self.chord_indices[chord]] = 1
 			y[number, self.chord_indices[self.next_chords[number]]] = 1
 
-		return x,y
+		return x, y
 
 def generateSheet(arg, generated, model):
 	"""학습된 model에 의해서 chord를 생성"""
