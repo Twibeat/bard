@@ -9,6 +9,44 @@ from keras.optimizers import RMSprop
 from keras.utils.data_utils import get_file
 import numpy as np
 
+class Generator():
+	def __init__(self, max_length, chord_length):
+		self.model = Sequential()
+		self.model.add(LSTM(128, input_shape=(max_length, chord_length), return_sequences=True))
+		self.model.add(LSTM(128, return_sequences=False))
+		self.add(Dense(chords_length))	
+		self.add(Activation('softmax'))
+
+		optimizer = RMSprop(lr=0.01)
+		model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+	
+	def buildModel(self):
+		pass
+	def generateList(self):
+		pass
+	def generateNewNote(self):
+		pass
+	def sample(self):
+		pass
+	def iterate(self, x, y):
+		pass
+
+	def train_generation_iterate(x, y, model, head, sheet, times=50):
+		#학습 - 멜로디 생성을 반복합니다.
+		#곡 1개 기준으로 50번 학습정도면 최소 loss에 도달함
+		for iteration in range(0, times):
+			print("Iteration",iteration)
+			# 학습시킨다. 안되면 verbose=0으로 하면 되는 경우가 있음(데이터가 너무 작으면 에러 발생.)
+			model.fit(x,y,verbose=1)
+
+			chords = generate_chord(sheet,preprocessed)
+
+			#10번에 한번씩 파일을 만든다.
+			if (iteration % 10) == 0:
+				print("Write file")
+				output_file_name = input_file_name + '_iter' + str(iteration) + '.midi'
+				musicUtil.out_midi(output_file_name, head, chords)
+
 def generateSheet(arg, generated, model):
 	"""학습된 model에 의해서 chord를 생성"""
 	x = np.zeros((1, arg.maxlen, len(arg.chords)))
