@@ -4,12 +4,10 @@ from preprocessor import MidiTool
 if __name__ == "__main__":
 	midi_util = MidiTool()
 
-	midi_util.parseMidi("twice_cheerup.mid")#("twice_cheerup.mid")
+	sheet, header = midi_util.parseMidi("twice_cheerup.mid")#("twice_cheerup.mid")
 
-	midi_util.preprocess()#(sheet)
+	x, y, value_length = midi_util.preprocess(sheet)#(sheet)
 
-	generator = Generator()
+	generator = Generator(midi_util.maxlen, value_length)
 
-	generator.buildModel()
-
-	generator.iterate()
+	generator.train_generation_iterate(x, y, header, sheet, 1)

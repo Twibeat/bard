@@ -3,14 +3,17 @@
 재구성하기위함 아직 사용은 하지 않는다.
 """
 
-from music21 import note
+from music21 import note,stream
+from music21 import converter
 from fractions import Fraction
+import numpy as np
 class MidiTool:
-	def __init__(self, maxlen=16):
+	def __init__(self, step = 4,maxlen=16):
 		"""
 		maxlen이라는 이름은 좀 그렇다. 한번에 학습시킬 멜로디의 수를 나타내는건데...
 		"""
 		self.maxlen = maxlen
+		self.step = step
 
 	def parseMidi(self, filename):
 		"""
@@ -26,6 +29,7 @@ class MidiTool:
 				if isinstance(voice, stream.Voice):
 					print "length: ", len(voice)
 					return make_list(voice)
+					
 	def makeList(self, stream):
 		"""
 		voice는 note의 스트림임
@@ -33,7 +37,7 @@ class MidiTool:
 		header_size = 3 #header가 3개가 아닐수도 
 		stream_to_list = []
 
-		for each_item in stream[header_size:]:
+		for each_item in stream[header_size : ]:
 			if isinstance(each_item, note.Note):
 				stream_to_list.append(each_item.name + str(each_item.octave) + '/' + str(each_item.duration.quarterLength))
 			elif isinstance(each_item, note.Rest):
@@ -41,8 +45,33 @@ class MidiTool:
 
 		return stream_to_list, stream[0:header_size]
 
-	def preprocess(self):
-		pass
+	def preprocess(self, sheet):
+		self.mappingData(sheet)
+		x,y = self.onehotEncoding()
+		return x, y, len(self.values);
+
+	def mappingData(self, sheet):
+		self.values = sorted(list(set(sheet)))
+		self.values_indices = dict((v, i) for i, v in enumerate(self.values))
+		self.indices_values = dict((i, v) for i, v in enumerate(self.values))
+		
+		self.sentences = []
+		self.next_values = []
+		for i in range(0, len(self.values) - self.maxlen, self.step):
+			self.sentences.append(sheet[i : i + self.maxlen])
+			self.next_values.append(sheet[i + self.maxlen])
+	
+	def onehotEncoding(self):
+		x = np.zeros((len(self.sentences), self.maxlen, len(self.values)), dtype = np.bool)
+		y = np.zeros((len(self.sentences), len(self.values)), dtype = np.bool)
+
+		for number, sentence in enumerate(self.sentences):
+			for index, value in enumerate(sentence):
+				x[number, index, self.values_indices[value]] = 1
+			y[number, self.values_indices[self.next_values[number]]] = 1
+
+		return x, y
+
 	def outMidi(self):
 		pass
 
@@ -59,21 +88,21 @@ class preprocessor(object):
 		self.maxlen = maxlen #너무작으면 결과가 이상하게(FFFFFFFFFF같은, 같은거만 나온다면 늘려야됨)
 		step = 4 # 시작위치 넘어 갈 순서
 		self.sentences = []
-		self.next_chords = []
-		for i in range(0, len(self.chords) - self.maxlen, step):
+		self.next_values = []
+		for i in range(0, len(self.values) - self.maxlen, step):
 			self.sentences.append(sheet[i:i + self.maxlen])        
-			self.next_chords.append(sheet[i + self.maxlen])
+			self.next_values.append(sheet[i + self.maxlen])
 
 	def mappingData(self, sheet):
-		"""set으로 중복없애고 리스트 만들어 정렬(chord단위)
+		"""set으로 중복없애고 리스트 만들어 정렬(value단위)
 		이렇게 되면 맨뒤에 의문사나 .같은게 문제가됨 ?같은거 없애봐라 -> 코드는 상관없징
-		chords는 특정 음악파일이 아닌 나중에 는 전체 코드 구성으로 바꺼야 됨 
+		values는 특정 음악파일이 아닌 나중에 는 전체 코드 구성으로 바꺼야 됨 
 		"""
-		self.chords = sorted(list(set(sheet)))#list(np.unique(np.array(sheet)))#
-		self.chord_indices = dict((w, i) for i, w in enumerate(self.chords))
-		self.indices_chord = dict((i, w) for i, w in enumerate(self.chords))
-		print self.chord_indices
-		print self.indices_chord
+		self.values = sorted(list(set(sheet)))#list(np.unique(np.array(sheet)))#
+		self.value_indices = dict((w, i) for i, w in enumerate(self.values))
+		self.indices_value = dict((i, w) for i, w in enumerate(self.values))
+		print self.value_indices
+		print self.indices_value
 
 	def onehotEncodig(self):
 		"""
@@ -82,13 +111,13 @@ class preprocessor(object):
 		y = 데이터의 수 * 출력(코드의 종류 수(코드의 종류마다 1비트씩 사용함))
 
 		"""
-		x = np.zeros((len(self.sentences), self.maxlen, len(self.chords)), dtype=np.bool)
-		y = np.zeros((len(self.sentences), len(self.chords)), dtype=np.bool)
+		x = np.zeros((len(self.sentences), self.maxlen, len(self.values)), dtype=np.bool)
+		y = np.zeros((len(self.sentences), len(self.values)), dtype=np.bool)
 		
 		for number, sentence in enumerate(self.sentences):
-			for index, chord in enumerate(sentence):
-				x[number, index, self.chord_indices[chord]] = 1
-			y[number, self.chord_indices[self.next_chords[number]]] = 1
+			for index, value in enumerate(sentence):
+				x[number, index, self.value_indices[value]] = 1
+			y[number, self.value_indices[self.next_values[number]]] = 1
 
 		return x, y
 
@@ -123,23 +152,23 @@ def make_list(stream):
 	header = stream[0:header_size]
 	return stream_to_list, header
 
-def out_midi(dir, head, chords):
+def out_midi(dir, head, values):
 	"""생성된 char형태의 코드를 midi로 만들어줌"""
 	streams = stream.Stream()
 
 	for h in head:
 		streams.append(h)
 
-	for chord in chords:
+	for value in values:
 		# 현재는 (음과 옥타브 / 음길이) 형태로 구분한다. 나누어 준다.
-		chord = chord.split('/', 1)
-		if chord[0] == "rest":
-			n = note.Rest(chord[0])
-			n = set_duration(n, chord[1])
+		value = value.split('/', 1)
+		if value[0] == "rest":
+			n = note.Rest(value[0])
+			n = set_duration(n, value[1])
 			streams.append(n)
 		else:
-			n = note.Note(chord[0])
-			n = set_duration(n, chord[1])
+			n = note.Note(value[0])
+			n = set_duration(n, value[1])
 			streams.append(n)
 
 	write_stream(dir, streams)
