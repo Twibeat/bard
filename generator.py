@@ -15,10 +15,15 @@ class Generator():
 		self.values_length = len(values)
 		self.values_indices = dict((v, i) for i, v in enumerate(values)) 
 		self.indices_values = dict((i, v) for i, v in enumerate(values))
-
+		"""
+		LSTM크기가 너무 작으면 cost(loss)가 진동하는 경향이 있다.
+		대신에 중후반에 같은 멜로디가 반복되는 경향이 적어진다.(일시 적인건지 확인이 필요)
+		=>sample함수의 temperature값의 영향인걸로 예상 
+		"""
+		lstm_size = 128
 		self.model = Sequential()
-		self.model.add(LSTM(128, input_shape=(max_length, self.values_length), return_sequences=True))
-		self.model.add(LSTM(128, return_sequences=False))
+		self.model.add(LSTM(lstm_size, input_shape=(max_length, self.values_length), return_sequences=True))
+		self.model.add(LSTM(lstm_size, return_sequences=False))
 		self.model.add(Dense(self.values_length))	
 		self.model.add(Activation('softmax'))
 
@@ -72,9 +77,12 @@ class Generator():
 			x[0, t, self.values_indices[value]] = 1
 
 		preds = self.model.predict(x, verbose=0)[0]
-		next_index = self.sample(preds, 0.5)
+		next_index = self.sample(preds)
 		next_value = self.indices_values[next_index]
 
 		generated.append(next_value)#새로운 단어를 추가한다.
 		#첫번쨰 요소를 제거 
 		return generated[1:], next_value
+
+	def saveWeight(self):
+		pass

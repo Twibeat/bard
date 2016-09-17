@@ -4,7 +4,7 @@ from generator import Generator
 from preprocessor import MidiTool
 
 
-input_file = "twice_cheerup.mid"
+input_file = "twice_like_ooh_ahh.midi"
 input_file_folder = "./input_files/"
 input_file_dir = input_file_folder + input_file
 input_file_name = input_file.split('.')[0]
@@ -37,4 +37,4 @@ if __name__ == "__main__":
 
 	generator = Generator(midi_util.maxlen, input_set)
 
-	iterate_train_generation(x, y, header, sheet, 10)
+	iterate_train_generation(x, y, header, sheet, 50)
