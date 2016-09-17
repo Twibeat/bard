@@ -9,6 +9,7 @@ def parse_midi(filename):
 	midi파일에서 최초의 Voice를 찾는다. 
 	=> 문제의 여지가 있다. 항상 Voice에서 피아노 멜로디가 있는게 아니라서 
 	"""
+	print "parse midi file..."
 	score = converter.parse(filename)
 	for part in score:
 		for voice in part:
@@ -53,6 +54,7 @@ def out_midi(dir, head, chords):
 
 def write_stream(dir, streams):
 	"""stream을 저장한다."""
+	print "write stream..."
 	mf = midi.translate.streamToMidiFile(streams)
 	mf.open(dir,'wb')
 	mf.write()
@@ -60,7 +62,7 @@ def write_stream(dir, streams):
 
 def set_duration(note, duration):
 	"""
-	무한 소수 같은건 (1/12) 분수로 표현되어서 이에 대한 처리를 해준다.
+	무한 소수 같은건 (1/12) 분수로 표현되어서 이에 대한 처리를 해준다. python3쓰면 상관이 없긴한데 ...
 	기본 모듈 중 하나인 Fraction(from fractions import Fration) 이용
 	"""
 	if duration.find('/') is not -1:
