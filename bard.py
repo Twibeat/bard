@@ -4,7 +4,7 @@ from generator import Generator
 from preprocessor import MidiTool
 
 class Bard():
-	def __init__(self, input_file_dir="./input_files/twice_like_ooh_ahh.midi", output_file_dir = "./output_files/"):
+	def __init__(self, input_file_dir, output_file_dir):
 		self.input_file_dir = input_file_dir
 		self.input_file = input_file_dir.split('/')[-1]
 		self.input_file_name = self.input_file.split('.')[0]
@@ -35,9 +35,10 @@ class Bard():
 			#10번에 한번씩 파일을 만든다.
 			if (iteration % 10) == 0:
 				print("Write file")
-				output_file_name = self.output_file_dir + self.input_file_name + '_iter' + str(iteration) + '.midi'
+				output_file_name = self.output_file_dir + self.input_file_name + '_iter' + str(iteration) + '.mid'
 				self.midi_util.out_midi(output_file_name, header, output_values)
-
+		print("iteration finished")
+		
 if __name__ == "__main__":
-	bard = Bard()
+	bard = Bard("./input_files/twice_like_ooh_ahh.midi", "./output_files/")
 	bard.main()

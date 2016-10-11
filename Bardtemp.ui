@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1003</width>
-    <height>196</height>
+    <width>1045</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -479,7 +479,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <rect>
      <x>10</x>
      <y>20</y>
-     <width>981</width>
+     <width>1021</width>
      <height>51</height>
     </rect>
    </property>
@@ -508,7 +508,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <rect>
      <x>10</x>
      <y>80</y>
-     <width>981</width>
+     <width>1021</width>
      <height>51</height>
     </rect>
    </property>
@@ -537,7 +537,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <rect>
      <x>430</x>
      <y>140</y>
-     <width>561</width>
+     <width>607</width>
      <height>51</height>
     </rect>
    </property>
@@ -561,7 +561,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>150</y>
      <width>401</width>
      <height>31</height>
@@ -570,6 +570,85 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <property name="value">
     <number>24</number>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>200</y>
+     <width>1021</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>고급기능</string>
+   </property>
+   <widget class="QWidget" name="horizontalLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>261</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_1">
+     <item>
+      <widget class="QLabel" name="input_label_2">
+       <property name="text">
+        <string>데이터 길이</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="input_lineEdit_2"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_6">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>20</y>
+      <width>261</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="input_label_4">
+       <property name="text">
+        <string>데이터 간격</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="input_lineEdit_4"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_9">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>20</y>
+      <width>261</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QLabel" name="input_label_7">
+       <property name="text">
+        <string>데이터 간격</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="input_lineEdit_7"/>
+     </item>
+    </layout>
+   </widget>
   </widget>
  </widget>
  <resources/>

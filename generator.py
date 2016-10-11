@@ -10,20 +10,20 @@ from keras.utils.data_utils import get_file
 import numpy as np
 
 class Generator():
-	def __init__(self, max_length, values):
+	def __init__(self, max_length, values, lstm_dim = 2):
 		self.max_length = max_length
 		self.values_length = len(values)
 		self.values_indices = dict((v, i) for i, v in enumerate(values)) 
 		self.indices_values = dict((i, v) for i, v in enumerate(values))
+		""" 
+		lstm의 차원은 최소 2차원이 되어야 한다. 입력이 2차원이기 때문 [max_length, values_length]형태로 들어감
 		"""
-		LSTM크기가 너무 작으면 cost(loss)가 진동하는 경향이 있다.
-		대신에 중후반에 같은 멜로디가 반복되는 경향이 적어진다.(일시 적인건지 확인이 필요)
-		=>sample함수의 temperature값의 영향인걸로 예상 
-		"""
-		lstm_size = 128
+		if lstm_dim < 2:
+			lstm_dim = 2
+
 		self.model = Sequential()
-		self.model.add(LSTM(lstm_size, input_shape=(max_length, self.values_length), return_sequences=True))
-		self.model.add(LSTM(lstm_size, return_sequences=False))
+		self.model.add(LSTM(lstm_dim, input_shape=(max_length, self.values_length), return_sequences=True))
+		self.model.add(LSTM(lstm_dim, return_sequences=False))
 		self.model.add(Dense(self.values_length))	
 		self.model.add(Activation('softmax'))
 
