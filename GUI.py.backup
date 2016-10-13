@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(1003, 196)
+        Dialog.resize(1005, 196)
         Dialog.setStyleSheet(_fromUtf8("QToolTip\n"
 "{\n"
 "     border: 1px solid black;\n"
@@ -514,7 +514,7 @@ class Ui_Dialog(object):
         self.output_pushButton.setObjectName(_fromUtf8("output_pushButton"))
         self.horizontalLayout_2.addWidget(self.output_pushButton)
         self.horizontalLayoutWidget_3 = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(430, 140, 561, 51))
+        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(430, 140, 607, 51))
         self.horizontalLayoutWidget_3.setObjectName(_fromUtf8("horizontalLayoutWidget_3"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_3)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
@@ -535,9 +535,9 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(_translate("Dialog", "Bard", None))
         self.input_label.setText(_translate("Dialog", "입력 파일 ", None))
-        self.input_pushButton.setText(_translate("Dialog", "찾아보기", None))
+        self.input_pushButton.setText(_translate("Dialog", "설정", None))
         self.output_label.setText(_translate("Dialog", "출력 경로 ", None))
-        self.output_pushButton.setText(_translate("Dialog", "찾아보기", None))
+        self.output_pushButton.setText(_translate("Dialog", "설정", None))
         self.label.setText(_translate("Dialog", "입력 파일과 출력 경로 설정 후 생성버튼을 눌러주세요", None))
         self.generate_pushButton.setText(_translate("Dialog", "생성", None))
 

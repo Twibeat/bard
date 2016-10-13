@@ -84,5 +84,8 @@ class Generator():
 		#첫번쨰 요소를 제거 
 		return generated[1:], next_value
 
-	def saveWeight(self):
-		pass
+	def saveWeights(self,filename):
+		self.model.save_weights(filename)
+
+	def loadWeights(self,filename):
+		self.model.load_weights(filename)

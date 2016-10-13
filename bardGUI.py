@@ -27,7 +27,7 @@ class MainDialog(QDialog, GUI.Ui_Dialog):
 
         # 백그라운드 작업
         self.backgroundProcess = BackgroundThread()
-        self.backgroundProcess.backgroundDone.connect(self.finished)
+        self.backgroundProcess.backgroundDone.connect(self.finishedGeneration)
 
     def getInputFile(self):
         input_file_dir = QFileDialog.getOpenFileName(self, 
@@ -45,14 +45,12 @@ class MainDialog(QDialog, GUI.Ui_Dialog):
 
     	if not os.path.exists(self.input_file_dir) or not os.path.exists(self.output_file_dir):
     		QMessageBox.information(self, u"경로 없음", u"잘못된 경로 입니다. 올바른 경로를 지정해 주세요");return
-        #bard = Bard(str(self.input_file_dir), str(self.output_file_dir)+"\\")
-        #bard = bard.main(10)
+
         self.backgroundProcess.setDir(self.input_file_dir, self.output_file_dir)
         self.backgroundProcess.start()
         QMessageBox.information(self, u"파일 생성", u"파일 생성을 생성합니다.")
-        #QMessageBox.information(self, u"생성 완료", u"파일 생성 완료")
 
-    def finished(self):
+    def finishedGeneration(self):
         QMessageBox.information(self, u"파일 생성 완료", u"파일이 생성되었습니다.")
 
 class BackgroundThread(QtCore.QThread):
@@ -67,9 +65,9 @@ class BackgroundThread(QtCore.QThread):
 
         """
         bard = Bard(self.input_file_dir, self.output_file_dir)
-        bard = bard.main(10)
+        sheet, header, x, y, input_set = bard.preprocess()
+        bard.generate(sheet, header, x, y, input_set, 10)
         self.backgroundDone.emit(True)
-        
 
 app = QApplication(sys.argv)
 dialog = MainDialog()
