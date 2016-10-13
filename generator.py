@@ -10,15 +10,20 @@ from keras.utils.data_utils import get_file
 import numpy as np
 
 class Generator():
-	def __init__(self, max_length, values):
+	def __init__(self, max_length, values, lstm_dim = 2):
 		self.max_length = max_length
 		self.values_length = len(values)
 		self.values_indices = dict((v, i) for i, v in enumerate(values)) 
 		self.indices_values = dict((i, v) for i, v in enumerate(values))
+		""" 
+		lstm의 차원은 최소 2차원이 되어야 한다. 입력이 2차원이기 때문 [max_length, values_length]형태로 들어감
+		"""
+		if lstm_dim < 2:
+			lstm_dim = 2
 
 		self.model = Sequential()
-		self.model.add(LSTM(128, input_shape=(max_length, self.values_length), return_sequences=True))
-		self.model.add(LSTM(128, return_sequences=False))
+		self.model.add(LSTM(lstm_dim, input_shape=(max_length, self.values_length), return_sequences=True))
+		self.model.add(LSTM(lstm_dim, return_sequences=False))
 		self.model.add(Dense(self.values_length))	
 		self.model.add(Activation('softmax'))
 
@@ -72,9 +77,15 @@ class Generator():
 			x[0, t, self.values_indices[value]] = 1
 
 		preds = self.model.predict(x, verbose=0)[0]
-		next_index = self.sample(preds, 0.5)
+		next_index = self.sample(preds)
 		next_value = self.indices_values[next_index]
 
 		generated.append(next_value)#새로운 단어를 추가한다.
 		#첫번쨰 요소를 제거 
 		return generated[1:], next_value
+
+	def saveWeights(self,filename):
+		self.model.save_weights(filename)
+
+	def loadWeights(self,filename):
+		self.model.load_weights(filename)

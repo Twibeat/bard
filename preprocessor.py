@@ -7,8 +7,9 @@ from fractions import Fraction
 import numpy as np
 
 class MidiTool:
-	def __init__(self, step = 4, maxlen=16):
+	def __init__(self, step = 1, maxlen=16):
 		"""
+		maxlen을 크게 하고 step의 수룰 줄이면 한음만 반복되는 현상이 줄어 들지만 학습이 느려진다.
 		maxlen이라는 이름은 좀 그렇다. 한번에 학습시킬 멜로디의 수를 나타내는건데...
 		"""
 		self.maxlen = maxlen
@@ -28,7 +29,26 @@ class MidiTool:
 				if isinstance(voice, stream.Voice):
 					print "length: ", len(voice)
 					return self.makeList(voice)
-					
+
+	def parseMidi2(self, filename):
+		"""
+		여러개를 학습 시키기 위한 연구 중	
+		"""
+		header_list = []
+		melody_list = []
+
+		print "parse midi file..."
+		score = converter.parse(filename)
+		for part in score:
+			for voice in part:
+				if isinstance(voice, stream.Voice):					
+					melody, header = self.makeList(voice)
+					header_list.append(header)
+					melody_list.append(melody)
+
+		print "number of melody:", len(melody_list)
+		return melody_list, header_list	
+
 	def makeList(self, stream):
 		"""
 		voice는 note의 스트림임
