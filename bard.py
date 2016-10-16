@@ -31,7 +31,7 @@ class Bard():
 
 		self.iterate_train_generation(x, y, header, sheet, n_iteration)
 
-	def all(self, n_iteration = 50):
+	def all(self, n_iteration = 10):
 		self.midi_tool = MidiTool()
 
 		sheet, header = self.midi_tool.parseMidi(self.input_file_dir)
