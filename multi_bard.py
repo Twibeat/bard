@@ -104,6 +104,10 @@ class Bard():
 	def load_weights(self, filename="./weight.hdf5"):
 		self.generator.loadWeights(filename)
 
+	def generate_midi(self, header, sheet, output_file_name="output.mid"):
+		output_values = self.generator.generateValue(sheet)
+		self.midi_tool.out_midi(output_file_name, header, output_values)
+
 if __name__ == "__main__":
 	input_file_dir = "./input_files/"
 	output_file_dir = "./output_files/"
@@ -113,7 +117,17 @@ if __name__ == "__main__":
 	x_list, y_list= bard.preprocess(sheets)
 	bard.init_generator(bard.tables)
 
-	bard.train(x_list[1], y_list[1])
+	#각 리스트를 10번씩 가르쳐보자  
+
+	for index in range(len(sheets)):
+		print("train",index)
+		for iteration in range(1,11):
+			print("Iteration",iteration)
+			bard.train(x_list[index], y_list[index])
+
+	bard.generate_midi(headers[0], sheets[0], 'testout.mid')
+
+
 		
 		
 	
