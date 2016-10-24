@@ -43,7 +43,7 @@ class Generator():
 	    return np.argmax(probas)
 	    
 	def train(self, x, y):
-		self.model.fit(x, y, verbose=1)
+		self.model.fit(x, y, verbose=0)
 
 	def train_generation(self, x, y, sheet):
 		# 학습시킨다. 안되면 verbose=0으로 하면 되는 경우가 있음(데이터가 너무 작으면 에러 발생.)
