@@ -5,6 +5,7 @@ from preprocessor import MidiTool
 import glob
 import os
 import numpy as np
+import pickle
 """
 다중으로 가르치려면 어떻게 할까?
 ->generator가 살아 있어야함 
@@ -18,20 +19,22 @@ max_length이름은 직관적이지 않다. batch_size같은게 맞지 않나?
 abcdef -> g 에서 len(abcdef)이니까
 """
 class MultiBard():
-	def __init__(self, input_file_dir, output_file_dir):
-		self.input_file_dir = input_file_dir
-		#self.input_file = input_file_dir.split('/')[-1]
-		#self.input_file_name = self.input_file.split('.')[0]
-		self.output_file_dir = output_file_dir
+	def __init__(self):
 		self.max_length = 16
 		self.step = 1
 		self.midi_tool = MidiTool(self.step, self.max_length)
 
-	def parse_midi(self):
+	def parse_midi(self, input_file_dir, output_file_dir):
+		self.input_file_dir = input_file_dir
+		self.output_file_dir = output_file_dir
 		sheets = []
 		headers = []
+		
 		#폴더에 있는 midi파일들의 이름을 가져와서 각각 parsing
-		if(os.path.exists(self.input_file_dir)):
+		
+		try:
+			if not os.path.exists(self.input_file_dir):
+				raise IOError
 			midifile_list = glob.glob(self.input_file_dir + "*.mid")
 			midifile_list = midifile_list + glob.glob(self.input_file_dir + "*.midi")
 			print midifile_list
@@ -41,9 +44,16 @@ class MultiBard():
 				sheets.append(sheet)
 				headers.append(header)
 			return sheets, headers
-		else:
+		except IOError:
+			"""
+			확인이 필요
+			"""
+			print("dir: " + self.input_file_dir)
+			print("dir is noting!")
+			exit()
+			return [], []
 			#없으면 종료
-			print("dir is noting")
+			#raise IOError
 	
 	def make_tables(self, sheets):
 		"""
@@ -113,24 +123,32 @@ class MultiBard():
 
 	def multi_train_iterate(self, sheets, x_list, y_list, max_iteration = 10):
 		"""
-		왜 안되지 ...
+		왜 안되지 ... 일단 밖으로 뺌
 		"""
-		for index in range(len(sheets)):
-			print("train",index)
-			for iteration in range(0,max_iteration):
-				print("Iteration",iteration)
+		for iteration in range(1, max_iteration + 1):
+			print("Iteration",iteration)
+			for index in range(len(sheets)):
+				print("train", index)
 				self.train(x_list[index], y_list[index])
+
+	def save_tables(self, filename = "table.txt"):
+		with open(filename, 'wb') as save_data:
+			pickle.dump(self.tables, save_data)
+
+	def load_tables(self, filename = "table.txt"):
+		with open(filename, 'rb') as load_data:
+			self.tables = pickle.load(load_data)
 
 if __name__ == "__main__":
 	input_file_dir = "./input_files/"
 	output_file_dir = "./output_files/"
 
-	bard = MultiBard(input_file_dir, input_file_dir)
-	sheets, headers = bard.parse_midi()
+	bard = MultiBard()
+	sheets, headers = bard.parse_midi(input_file_dir, output_file_dir)
 	x_list, y_list= bard.preprocess(sheets)
 	bard.init_generator(bard.tables)
 	
-	#bard.multi_train_iterate(sheets, x_list, y_list, 10)
+	bard.multi_train_iterate(sheets, x_list, y_list, 10)
 	"""
 	bard.load_weights()
 	
@@ -141,19 +159,23 @@ if __name__ == "__main__":
 		for iteration in range(1,51):
 			print("Iteration",iteration)
 			bard.train(x_list[index], y_list[index])
-	"""
+	
 	#50번씩 각각 - 이게 잘됨
-	for iteration in range(1,51):
+	for iteration in range(1,11):
 		print("Iteration",iteration)
 		for index in range(len(sheets)):
-			print("train",index)
+			print("train", index)
 			bard.train(x_list[index], y_list[index])
 		if(iteration % 10) == 0:	
 			bard.generate_midi(headers[len(sheets)-1], sheets[len(sheets)-1], output_file_dir + 'testout'+str(iteration)+'.mid')
+	print bard.tables
 	bard.save_weights()
+	bard.save_table()
+	bard.load_table()
+	print bard.tables
 	#임시 방편ㅇㅇ
 	#bard.generate_midi(headers[len(sheets)-1], sheets[len(sheets)-1], 'load_testout1000.mid')
-		
+	"""	
 		
 	
 
