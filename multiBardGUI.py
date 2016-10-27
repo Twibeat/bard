@@ -148,8 +148,8 @@ class BackgroundThreadTrain(QtCore.QThread):
         multibard.init_generator(multibard.tables)
         multibard.multi_train_iterate(sheets, x_list, y_list, self.iteraion)
 
-        multibard.save_weights(self.output_file_dir+'weights.hdf5')
-        multibard.save_table(self.output_file_dir+'tables.table')
+        multibard.save_weights(self.output_file_dir + 'weights.hdf5')
+        multibard.save_tables(self.output_file_dir + 'tables.table')
 
         self.backgroundDone.emit(True)
 
@@ -160,16 +160,24 @@ class BackgroundThreadGenerate(QtCore.QThread):
         self.weight_file_dir = weight_file_dir
         self.output_file_dir = output_file_dir
 
+        # 매개 변수로 입력 받아야 할 것 
+        self.head_file_dir = "C:\\cmk\\0_input_files\\sakamoto\\EnergyFlow.mid"
+        self.filename = "sample"
+
     def run(self):
+        """
+        모든 파일의 경우의 수를 가지는 테이블을 만들지 못한다면 batch에 있던 파일중 하나로 sheet를 넘겨야 한다.
+        """
         multiBard = MultiBard()
         multiBard.load_tables(self.table_file_dir)
         multiBard.init_generator(multiBard.tables)
         multiBard.load_weights(self.weight_file_dir)
 
-        """
-        sample 입력 받아서 테스트 하면됨
-        """
+        sheet, header = multiBard.midi_tool.parseMidi(self.head_file_dir)
+        
+        multiBard.generate_midi(header, sheet, self.output_file_dir + self.filename + '.mid')
         self.backgroundDone.emit(True)
+        
 app = QApplication(sys.argv)
 dialog = MainDialog()
 dialog.show()

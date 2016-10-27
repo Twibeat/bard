@@ -146,6 +146,7 @@ if __name__ == "__main__":
 	bard = MultiBard()
 	sheets, headers = bard.parse_midi(input_file_dir, output_file_dir)
 	x_list, y_list= bard.preprocess(sheets)
+	
 	bard.init_generator(bard.tables)
 	
 	bard.multi_train_iterate(sheets, x_list, y_list, 10)
