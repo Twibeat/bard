@@ -28,6 +28,7 @@ class MainDialog(QDialog, multiGUI.Ui_Dialog):
         self.generate_weight_pushButton.clicked.connect(self.setGenerateWeightFile)
         self.generate_output_pushButton.clicked.connect(self.setGenerateOutputDir)
         self.generate_pushButton.clicked.connect(self.generateMidi)
+        self.generate_sample_pushButton.clicked.connect(self.setGenerateSampleFile)
         # 경로
         self.input_file_dir = ""
         self.output_file_dir = ""
@@ -100,6 +101,11 @@ class MainDialog(QDialog, multiGUI.Ui_Dialog):
             u'파일을 선택해주세요', 'c:\\',"weight files (*.hdf5)")
         self.generation_weight_lineEdit.setText(weight_file_dir)
     
+    def setGenerateSampleFile(self):
+        sample_file_dir = QFileDialog.getOpenFileName(self,
+            u'파일을 선택해주세요', 'c:\\',"sample files(*.midi *.mid)")
+        self.generation_sample_lineEdit.setText(sample_file_dir)
+
     def setGenerateOutputDir(self):
         output_file_dir = QFileDialog.getExistingDirectory(self,
             u'출력 디렉토리를 지정해 주세요', 'c:\\')
@@ -108,12 +114,14 @@ class MainDialog(QDialog, multiGUI.Ui_Dialog):
     def generateMidi(self):
         table_file_dir = str(self.generation_table_lineEdit.text())
         weight_file_dir = str(self.generation_weight_lineEdit.text())
+        sample_file_dir = str(self.generation_sample_lineEdit.text())
         output_file_dir = str(self.generation_output_lineEdit.text())
 
-        if (not os.path.exists(table_file_dir)) or (not os.path.exists(weight_file_dir)) or (not os.path.exists(output_file_dir)):
+
+        if (not os.path.exists(table_file_dir)) or (not os.path.exists(weight_file_dir)) or (not os.path.exists(sample_file_dir)) or (not os.path.exists(output_file_dir)):
             QMessageBox.information(self, u"경로 없음", u"잘못된 경로 입니다. 올바른 경로를 지정해 주세요");return;
            
-        self.backgroundProcessGenerate.setParameter(table_file_dir, weight_file_dir, output_file_dir)
+        self.backgroundProcessGenerate.setParameter(table_file_dir, weight_file_dir, sample_file_dir, output_file_dir)
         self.backgroundProcessGenerate.start()
         QMessageBox.information(self, u"파일 생성", u"파일을 생성합니다.")
 
@@ -155,14 +163,15 @@ class BackgroundThreadTrain(QtCore.QThread):
 
 class BackgroundThreadGenerate(QtCore.QThread):
     backgroundDone = QtCore.pyqtSignal(bool)
-    def setParameter(self, table_file_dir, weight_file_dir, output_file_dir):
+    def setParameter(self, table_file_dir, weight_file_dir, sample_file_dir, output_file_dir):
         self.table_file_dir = table_file_dir
         self.weight_file_dir = weight_file_dir
+        self.sample_file_dir = sample_file_dir
         self.output_file_dir = output_file_dir
 
         # 매개 변수로 입력 받아야 할 것 
         self.head_file_dir = "C:\\cmk\\0_input_files\\sakamoto\\EnergyFlow.mid"
-        self.filename = "sample"
+        self.filename = "sample22"
 
     def run(self):
         """
@@ -173,7 +182,7 @@ class BackgroundThreadGenerate(QtCore.QThread):
         multiBard.init_generator(multiBard.tables)
         multiBard.load_weights(self.weight_file_dir)
 
-        sheet, header = multiBard.midi_tool.parseMidi(self.head_file_dir)
+        sheet, header = multiBard.midi_tool.parseMidi(self.sample_file_dir)
         
         multiBard.generate_midi(header, sheet, self.output_file_dir + self.filename + '.mid')
         self.backgroundDone.emit(True)

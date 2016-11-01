@@ -40,6 +40,7 @@ class Generator():
 	    preds = exp_preds / np.sum(exp_preds)
 	    # 다항 분포를 구한다.
 	    probas = np.random.multinomial(1, preds, 1)
+	    # 가장 큰 값을 반환 한다.
 	    return np.argmax(probas)
 	    
 	def train(self, x, y):

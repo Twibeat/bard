@@ -48,8 +48,7 @@ class MultiBard():
 			"""
 			확인이 필요
 			"""
-			print("dir: " + self.input_file_dir)
-			print("dir is noting!")
+			print("dir " + self.input_file_dir + " is nothing")
 			exit()
 			return [], []
 			#없으면 종료
