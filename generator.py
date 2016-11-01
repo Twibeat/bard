@@ -1,7 +1,5 @@
 # _*_ coding: utf-8 _*_
-"""
-재구성하기 위함 아직 사용은 하지 않는다.
-"""
+
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
 from keras.layers import LSTM
@@ -42,11 +40,15 @@ class Generator():
 	    preds = exp_preds / np.sum(exp_preds)
 	    # 다항 분포를 구한다.
 	    probas = np.random.multinomial(1, preds, 1)
+	    # 가장 큰 값을 반환 한다.
 	    return np.argmax(probas)
+	    
+	def train(self, x, y):
+		self.model.fit(x, y, verbose=0)
 
 	def train_generation(self, x, y, sheet):
 		# 학습시킨다. 안되면 verbose=0으로 하면 되는 경우가 있음(데이터가 너무 작으면 에러 발생.)
-		self.model.fit(x, y, verbose=1)
+		self.train(x, y)
 		values = self.generateValue(sheet)
 		return values
 

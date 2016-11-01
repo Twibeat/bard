@@ -1,7 +1,4 @@
 # _*_ coding: utf-8 _*_
-"""
-재구성하기위함 아직 사용은 하지 않는다.
-"""
 from music21 import note, stream, converter, midi
 from fractions import Fraction
 import numpy as np
@@ -30,25 +27,6 @@ class MidiTool:
 					print "length: ", len(voice)
 					return self.makeList(voice)
 
-	def parseMidi2(self, filename):
-		"""
-		여러개를 학습 시키기 위한 연구 중	
-		"""
-		header_list = []
-		melody_list = []
-
-		print "parse midi file..."
-		score = converter.parse(filename)
-		for part in score:
-			for voice in part:
-				if isinstance(voice, stream.Voice):					
-					melody, header = self.makeList(voice)
-					header_list.append(header)
-					melody_list.append(melody)
-
-		print "number of melody:", len(melody_list)
-		return melody_list, header_list	
-
 	def makeList(self, stream):
 		"""
 		voice는 note의 스트림임
@@ -65,15 +43,20 @@ class MidiTool:
 		return stream_to_list, stream[0:header_size]
 
 	def preprocess(self, sheet):
+		self.makeTable(sheet)
 		self.mappingData(sheet)
 		x,y = self.onehotEncoding()
 		return x, y, self.values;
-
-	def mappingData(self, sheet):
+	
+	def makeTable(self, sheet):
 		self.values = sorted(list(set(sheet)))
 		self.values_indices = dict((v, i) for i, v in enumerate(self.values))
 		self.indices_values = dict((i, v) for i, v in enumerate(self.values))
-		
+	
+	def mappingData(self, sheet):
+		"""
+		학습할 x(sentences) y(next_values)를 정한다.
+		"""
 		self.sentences = []
 		self.next_values = []
 		for i in range(0, len(self.values) - self.maxlen, self.step):
@@ -81,6 +64,9 @@ class MidiTool:
 			self.next_values.append(sheet[i + self.maxlen])
 	
 	def onehotEncoding(self):
+		"""
+		데이터에 맞게 x,y를 만든다.
+		"""
 		x = np.zeros((len(self.sentences), self.maxlen, len(self.values)), dtype = np.bool)
 		y = np.zeros((len(self.sentences), len(self.values)), dtype = np.bool)
 
