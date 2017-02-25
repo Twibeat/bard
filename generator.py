@@ -69,7 +69,6 @@ class Generator():
 		for i in range(len(sheet)):#일단 반복은 sheet의 크기로
 			generated, next_value = self.generateNextValue(generated)
 			values.append(next_value)
-		#print values
 		return values
 
 	def generateNextValue(self, generated):
@@ -83,6 +82,7 @@ class Generator():
 		next_value = self.indices_values[next_index]
 
 		generated.append(next_value)#새로운 단어를 추가한다.
+		
 		#첫번쨰 요소를 제거 
 		return generated[1:], next_value
 
