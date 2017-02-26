@@ -1,0 +1,7 @@
+*.mid
+*.midi
+*.pyc
+*.pptx
+*.hdf5
+./input_files/*
+./output_files/*

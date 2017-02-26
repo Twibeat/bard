@@ -1,16 +1,18 @@
 # _*_ coding: utf-8 _*_
 import sys
 import os
-from PyQt4.QtGui import *
-from PyQt4 import QtCore
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 
-import multiGUI 
-from bard import Bard
+import multiGUI5
+from core.bard import Bard
 from multiBard import MultiBard
 """
 추가적인 파라미터 필요
 """
-class MainDialog(QDialog, multiGUI.Ui_Dialog):
+
+class MainDialog(QDialog, multiGUI5.Ui_Dialog):
     def __init__(self, parent=None):
         super(MainDialog, self).__init__(parent)
         
@@ -46,7 +48,7 @@ class MainDialog(QDialog, multiGUI.Ui_Dialog):
     def getImproviseInputFile(self):
         input_file_dir = QFileDialog.getOpenFileName(self, 
         	u'파일을 선택해주세요', 'c:\\',"midi files (*.midi *.mid)")
-        self.input_lineEdit.setText(input_file_dir)
+        self.input_lineEdit.setText(str(input_file_dir))
 
     def setImproviseOutputDir(self):
     	output_file_dir = QFileDialog.getExistingDirectory(self,
@@ -56,9 +58,6 @@ class MainDialog(QDialog, multiGUI.Ui_Dialog):
     def setImproviseGenerate(self):
         self.input_file_dir = str(self.input_lineEdit.text())
         self.output_file_dir = str(self.output_lineEdit.text())
-
-    	if (not os.path.exists(self.input_file_dir)) or (not os.path.exists(self.output_file_dir)):
-    		QMessageBox.information(self, u"경로 없음", u"잘못된 경로 입니다. 올바른 경로를 지정해 주세요");return
 
         iteraion = self.iteraion_spinBox.value()    
         self.backgroundProcess.setParameter(self.input_file_dir, self.output_file_dir, iteraion)
