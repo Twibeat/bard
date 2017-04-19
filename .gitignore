@@ -5,3 +5,4 @@
 *.hdf5
 ./input_files/*
 ./output_files/*
+*/__pycache__/*

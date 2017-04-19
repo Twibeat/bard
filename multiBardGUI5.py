@@ -5,9 +5,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 
-import multiGUI5
+from qt5 import multiGUI5
 from core.bard import Bard
-from multiBard import MultiBard
+from core.multiBard import MultiBard
 """
 추가적인 파라미터 필요
 """
@@ -186,6 +186,7 @@ class BackgroundThreadGenerate(QtCore.QThread):
         multiBard.generate_midi(header, sheet, self.output_file_dir + self.filename + '.mid')
         self.backgroundDone.emit(True)
         
+
 app = QApplication(sys.argv)
 dialog = MainDialog()
 dialog.show()
