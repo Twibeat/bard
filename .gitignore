@@ -6,3 +6,5 @@
 ./input_files/*
 ./output_files/*
 */__pycache__/*
+.idea/*
+static/*

@@ -15,7 +15,7 @@ class MidiTool:
 	def parseMidi(self, filename):
 		"""
 		http://web.mit.edu/music21/doc/usersGuide/usersGuide_17_derivations.html	
-		sample.mid는 불러오면 Sore이고 여러개의 Part로 구성된다. Part는 Voice로 구성되어 있다.
+		sample.mid는 불러오면 Score이고 여러개의 Part로 구성된다. Part는 Voice로 구성되어 있다.
 		midi파일에서 최초의 Voice를 찾는다. 
 		=> 문제의 여지가 있다. 항상 Voice에서 피아노 멜로디가 있는게 아니라서 
 		"""
@@ -25,13 +25,13 @@ class MidiTool:
 			for voice in part:
 				if isinstance(voice, stream.Voice):
 					print("length: ", len(voice))
-					return self.makeList(voice)
+					return self.make_list(voice)
 
-	def makeList(self, stream):
+	def make_list(self, stream):
 		"""
 		voice는 note의 스트림임
 		"""
-		header_size = 3 #header가 3개가 아닐수도 
+		header_size = 0 #header가 3개가 아닐수도 
 		stream_to_list = []
 
 		for each_item in stream[header_size : ]:
@@ -43,17 +43,17 @@ class MidiTool:
 		return stream_to_list, stream[0:header_size]
 
 	def preprocess(self, sheet):
-		self.makeTable(sheet)
-		self.mappingData(sheet)
+		self.make_table(sheet)
+		self.mapping_data(sheet)
 		x,y = self.onehotEncoding()
 		return x, y, self.values;
 	
-	def makeTable(self, sheet):
+	def make_table(self, sheet):
 		self.values = sorted(list(set(sheet)))
 		self.values_indices = dict((v, i) for i, v in enumerate(self.values))
 		self.indices_values = dict((i, v) for i, v in enumerate(self.values))
 	
-	def mappingData(self, sheet):
+	def mapping_data(self, sheet):
 		"""
 		학습할 x(sentences) y(next_values)를 정한다.
 		"""

@@ -3,7 +3,7 @@
 from core.generator import Generator
 from core.preprocessor import MidiTool
 """
-multi는 복잡하니까 단분한 버전도 남김
+multi는 복잡하니까 단분한 버전도 남김 - 아니지 재사용할수 있어야지!!
 """
 class Bard():
 	def __init__(self, input_file_dir, output_file_dir):
@@ -27,20 +27,6 @@ class Bard():
 
 	def generate(self, sheet, header, x, y, input_set, n_iteration = 10):
 		self.generator = Generator(self.maxlen, input_set)
-
-		self.iterate_train_generation(x, y, header, sheet, n_iteration)
-
-	def all(self, n_iteration = 10):
-		self.midi_tool = MidiTool()
-
-		sheet, header = self.midi_tool.parseMidi(self.input_file_dir)
-
-		#추출한 멜로디를 파일로 만들어 저장합니다.(스트림중 하나만 고르기 때문에 생성된것과 비교를 위함)
-		self.midi_tool.out_midi(self.output_file_dir + self.input_file_name + "_input.midi", header, sheet)
-
-		x, y, input_set = self.midi_tool.preprocess(sheet)#(sheet)
-
-		self.generator = Generator(self.midi_tool.maxlen, input_set)
 
 		self.iterate_train_generation(x, y, header, sheet, n_iteration)
 

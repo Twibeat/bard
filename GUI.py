@@ -178,7 +178,7 @@ class BackgroundThreadGenerate(QtCore.QThread):
         """
         multiBard = MultiBard()
         multiBard.load_tables(self.table_file_dir)
-        multiBard.init_generator(multiBard.tables)
+        multiBard.init_generator(multiBard.tables)#정보은닉이 아닌데 이건..
         multiBard.load_weights(self.weight_file_dir)
 
         sheet, header = multiBard.midi_tool.parseMidi(self.sample_file_dir)
