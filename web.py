@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_ 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, send_file
 from werkzeug.utils import secure_filename
 import os
 
@@ -31,5 +31,10 @@ def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.route('/input_files/<filename>', methods=['GET'])
+def input_files(filename):
+    target = os.path.join(APP_ROOT, 'input_files')
+    file = os.path.join("/".join([target, filename]))
+    return send_file(file)
 
 app.run()
