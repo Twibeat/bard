@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1003</width>
-    <height>196</height>
+    <width>1000</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Bard</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../Users/spear/Desktop/candy.PNG</normaloff>../../Users/spear/Desktop/candy.PNG</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QToolTip
@@ -474,102 +478,404 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     border: 1px solid #444;
 }</string>
   </property>
-  <widget class="QWidget" name="horizontalLayoutWidget">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>20</y>
+     <y>10</y>
      <width>981</width>
-     <height>51</height>
+     <height>291</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_">
-    <item>
-     <widget class="QLabel" name="input_label">
-      <property name="text">
-       <string>입력 파일 </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="input_lineEdit"/>
-    </item>
-    <item>
-     <widget class="QPushButton" name="input_pushButton">
-      <property name="text">
-       <string>찾아보기</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>981</width>
-     <height>51</height>
-    </rect>
+   <property name="currentIndex">
+    <number>2</number>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <item>
-     <widget class="QLabel" name="output_label">
-      <property name="text">
-       <string>출력 경로 </string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="output_lineEdit"/>
-    </item>
-    <item>
-     <widget class="QPushButton" name="output_pushButton">
-      <property name="text">
-       <string>찾아보기</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_3">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>140</y>
-     <width>561</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>입력 파일과 출력 경로 설정 후 생성버튼을 눌러주세요</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="generate_pushButton">
-      <property name="text">
-       <string>생성</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QProgressBar" name="progressBar">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>150</y>
-     <width>401</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="value">
-    <number>24</number>
-   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Improvise Mode</string>
+    </attribute>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_">
+      <item>
+       <widget class="QLabel" name="input_label">
+        <property name="text">
+         <string>  미디 파일 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="input_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="input_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="output_label">
+        <property name="text">
+         <string>  출력 경로 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="output_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="output_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>100</y>
+       <width>561</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>입력 파일과 출력 경로 설정 후 생성버튼을 눌러주세요</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="improvise_pushButton">
+        <property name="text">
+         <string>생성</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_7">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>191</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>  학습 횟수</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="iteraion_spinBox">
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Train Mode</string>
+    </attribute>
+    <widget class="QWidget" name="horizontalLayoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_1">
+      <item>
+       <widget class="QLabel" name="input_label_2">
+        <property name="text">
+         <string>  미디 경로 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="train_input_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="train_input_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_5">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="output_label_2">
+        <property name="text">
+         <string>  출력 경로 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="train_output_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="train_output_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_6">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>100</y>
+       <width>561</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>미디 경로와 출력 경로 설정 후 학습버튼을 눌러주세요</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="train_pushButton">
+        <property name="text">
+         <string>학습</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_11">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>191</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>  학습 횟수</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="train_iteraion_spinBox">
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_5">
+    <attribute name="title">
+     <string>Generation Mode</string>
+    </attribute>
+    <widget class="QWidget" name="horizontalLayoutWidget_8">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QLabel" name="input_label_3">
+        <property name="text">
+         <string>  테이블 파일</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="generation_table_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_table_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_9">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QLabel" name="input_label_4">
+        <property name="text">
+         <string>  가중치 파일</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="generation_weight_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_weight_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_10">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>200</y>
+       <width>561</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_8">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>입력 파일과 출력 경로 설정 후 생성버튼을 눌러주세요</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_pushButton">
+        <property name="text">
+         <string>생성</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_13">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_12">
+      <item>
+       <widget class="QLabel" name="output_label_6">
+        <property name="text">
+         <string>    샘플 파일 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="generation_sample_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_sample_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_12">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>150</y>
+       <width>981</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
+      <item>
+       <widget class="QLabel" name="output_label_4">
+        <property name="text">
+         <string>    출력 경로 </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="generation_output_lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="generate_output_pushButton">
+        <property name="text">
+         <string>찾아보기</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
