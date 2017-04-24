@@ -5,6 +5,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 
+
+
 from qt5 import multiGUI5
 from core.bard import Bard
 from core.multiBard import MultiBard
@@ -47,13 +49,13 @@ class MainDialog(QDialog, multiGUI5.Ui_Dialog):
 
     def getImproviseInputFile(self):
         input_file_dir = QFileDialog.getOpenFileName(self, 
-        	u'파일을 선택해주세요', 'c:\\',"midi files (*.midi *.mid)")
-        self.input_lineEdit.setText(str(input_file_dir))
+        	u'파일을 선택해주세요', QtCore.QDir.homePath(),'midi files (*.midi *.mid)')
+        self.input_lineEdit.setText(input_file_dir[0])
 
     def setImproviseOutputDir(self):
     	output_file_dir = QFileDialog.getExistingDirectory(self,
-    		u'출력 디렉토리를 지정해 주세요', 'c:\\')
-    	self.output_lineEdit.setText(output_file_dir + '\\')
+    		u'출력 디렉토리를 지정해 주세요', QtCore.QDir.homePath())
+    	self.output_lineEdit.setText(output_file_dir + '/')
     
     def setImproviseGenerate(self):
         self.input_file_dir = str(self.input_lineEdit.text())
@@ -71,12 +73,12 @@ class MainDialog(QDialog, multiGUI5.Ui_Dialog):
         QMessageBox.information(self, u"학습 완료", u"가중치파일과 테이블 파일이 생성되었습니다.")
 
     def setTrainInputDir(self):
-        input_file_dir = QFileDialog.getExistingDirectory(self,u'미디 파일의 디렉토리를 선택해주세요', 'c:\\')
-        self.train_input_lineEdit.setText(input_file_dir+'\\')
+        input_file_dir = QFileDialog.getExistingDirectory(self,u'미디 파일의 디렉토리를 선택해주세요', QtCore.QDir.homePath())
+        self.train_input_lineEdit.setText(input_file_dir + '/')
 
     def setTrainOutputDir(self):
-        output_file_dir = QFileDialog.getExistingDirectory(self,u'출력 디렉토리를 지정해 주세요', 'c:\\')
-        self.train_output_lineEdit.setText(output_file_dir+'\\')
+        output_file_dir = QFileDialog.getExistingDirectory(self,u'출력 디렉토리를 지정해 주세요', QtCore.QDir.homePath())
+        self.train_output_lineEdit.setText(output_file_dir + '/')
 
     def multiTrain(self):
         input_file_dir = str(self.train_input_lineEdit.text())
@@ -92,23 +94,23 @@ class MainDialog(QDialog, multiGUI5.Ui_Dialog):
     
     def setGenerateTableFile(self):
         table_file_dir = QFileDialog.getOpenFileName(self, 
-            u'파일을 선택해주세요', 'c:\\',"table files (*.table)")
-        self.generation_table_lineEdit.setText(table_file_dir)
+            u'파일을 선택해주세요', QtCore.QDir.homePath(),"table files (*.table)")
+        self.generation_table_lineEdit.setText(table_file_dir[0])
 
     def setGenerateWeightFile(self):
         weight_file_dir = QFileDialog.getOpenFileName(self, 
-            u'파일을 선택해주세요', 'c:\\',"weight files (*.hdf5)")
-        self.generation_weight_lineEdit.setText(weight_file_dir)
+            u'파일을 선택해주세요', QtCore.QDir.homePath(),"weight files (*.hdf5)")
+        self.generation_weight_lineEdit.setText(weight_file_dir[0])
     
     def setGenerateSampleFile(self):
         sample_file_dir = QFileDialog.getOpenFileName(self,
-            u'파일을 선택해주세요', 'c:\\',"sample files(*.midi *.mid)")
-        self.generation_sample_lineEdit.setText(sample_file_dir)
+            u'파일을 선택해주세요', QtCore.QDir.homePath(),"sample files(*.midi *.mid)")
+        self.generation_sample_lineEdit.setText(sample_file_dir[0])
 
     def setGenerateOutputDir(self):
         output_file_dir = QFileDialog.getExistingDirectory(self,
-            u'출력 디렉토리를 지정해 주세요', 'c:\\')
-        self.generation_output_lineEdit.setText(output_file_dir + '\\')
+            u'출력 디렉토리를 지정해 주세요', QtCore.QDir.homePath())
+        self.generation_output_lineEdit.setText(output_file_dir + '/')
 
     def generateMidi(self):
         table_file_dir = str(self.generation_table_lineEdit.text())
