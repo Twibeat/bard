@@ -104,8 +104,8 @@ class MultiBard():
 
 		return x_list, y_list
 	
-	def init_generator(self, table):
-		self.generator = Generator(self.max_length, table)
+	def init_generator(self):
+		self.generator = Generator(self.max_length, self.tables)
 
 	def train(self, x, y):
 		self.generator.train(x, y)
