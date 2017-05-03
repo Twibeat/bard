@@ -8,8 +8,8 @@ from PyQt5 import QtCore
 
 
 from qt5 import multiGUI5
-from core.bard import Bard
 from core.multiBard import MultiBard
+from core import new_bard
 """
 추가적인 파라미터 필요
 """
@@ -132,14 +132,16 @@ class BackgroundThread(QtCore.QThread):
         self.input_file_dir = input_file_dir
         self.output_file_dir = output_file_dir
         self.iteraion = iteraion
-    def run(self):
-        """
-        오버라이딩 함수 start로 실행 main은 함수 분리할 필요가 있음
 
-        """
-        bard = Bard(self.input_file_dir, self.output_file_dir)
-        sheet, header, x, y, input_set = bard.preprocess()
-        bard.generate(sheet, header, x, y, input_set, self.iteraion)
+    def run(self):
+        bard = new_bard.Bard()
+        bard.preprocess(self.input_file_dir)
+
+        for index in range(1, self.iteraion + 1):
+            bard.train()
+
+            if(index % 10) == 0:
+                bard.generate(self.output_file_dir, 'iter' + str(index))
         
         self.backgroundDone.emit(True)
 
@@ -151,14 +153,20 @@ class BackgroundThreadTrain(QtCore.QThread):
         self.iteraion = iteraion
 
     def run(self):
-        multibard = MultiBard()
+
+        multibard = new_bard.Bard()
         sheets, headers = multibard.parse_midi(self.input_file_dir, self.output_file_dir)
-        x_list, y_list = multibard.preprocess(sheets)
+        x_list, y_list = multibard.multi_preprocess(sheets)
         multibard.init_generator(multibard.tables)
         multibard.multi_train_iterate(sheets, x_list, y_list, self.iteraion)
 
         multibard.save_weights(self.output_file_dir + 'weights.hdf5')
         multibard.save_tables(self.output_file_dir + 'tables.table')
+
+        # bard = new_bard.Bard()
+        # bard.multi_preprocess(self.input_file_dir)
+        # bard.multi_train()
+        # bard.multi_generate()
 
         self.backgroundDone.emit(True)
 

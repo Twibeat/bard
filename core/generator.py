@@ -8,10 +8,10 @@ from keras.utils.data_utils import get_file
 import numpy as np
 
 class Generator():
-	def __init__(self, max_length, values, lstm_dim = 2):
+	def __init__(self, max_length, values,lstm_dim = 2):
 		self.max_length = max_length
 		self.values_length = len(values)
-		self.values_indices = dict((v, i) for i, v in enumerate(values)) 
+		self.values_indices = dict((v, i) for i, v in enumerate(values))
 		self.indices_values = dict((i, v) for i, v in enumerate(values))
 		""" 
 		lstm의 차원은 최소 2차원이 되어야 한다. 입력이 2차원이기 때문 [max_length, values_length]형태로 들어감
@@ -27,7 +27,13 @@ class Generator():
 
 		optimizer = RMSprop(lr=0.01)
 		self.model.compile(loss='categorical_crossentropy', optimizer=optimizer)
-	
+
+	def make_table(self, tables):
+		self.tables = sorted(list(set(tables)))
+		self.tables_indices = dict((t, i) for i, t in enumerate(self.tables))
+		self.indices_tables = dict((i, t) for i, t in enumerate(self.tables))
+
+
 	def sample(self, preds, temperature=1.0):
 	    """ 
 	    float의 범위가 작아서 double(여기서는 float64)로 바꿈 

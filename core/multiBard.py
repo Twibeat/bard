@@ -67,6 +67,7 @@ class MultiBard():
 		self.tables_indices = dict((t, i) for i, t in enumerate(self.tables))
 		self.indices_tables = dict((i, t) for i, t in enumerate(self.tables))	
 		#print self.indices_tables
+
 	def mapping_data(self, sheet):
 		"""
 		학습할 x(sentences) y(next_values)를 정한다.
@@ -149,6 +150,7 @@ if __name__ == "__main__":
 	bard.init_generator(bard.tables)
 	
 	bard.multi_train_iterate(sheets, x_list, y_list, 10)
+
 	"""
 	bard.load_weights()
 	
