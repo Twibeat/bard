@@ -8,19 +8,20 @@ import numpy as np
 import pickle
 
 class Bard():
-    def __init__(self):
-        self.max_length = 16
-        self.step = 1
+    def __init__(self, max_length=16, step=1):
+        self.max_length = max_length
+        self.step = step
         self.midi_tool = MidiTool(self.step, self.max_length)
 
     def preprocess(self, input_file_dir):
 
-        self.sheet, self.header = self.midi_tool.parseMidi(input_file_dir)
-        self.x, self.y, table = self.midi_tool.preprocess(self.sheet)
-        self.generator = Generator(self.max_length, table)#테이블을 미리 만들어 주자 그러면 생성자로 갈수 있음
+        self.sheet, self.header = self.midi_tool.parse_midi(input_file_dir)
+        x, y, table = self.midi_tool.preprocess(self.sheet)
+        self.generator = Generator(self.max_length, table)
+        return x, y
 
-    def train(self):
-        self.generator.train(self.x, self.y)
+    def train(self, x, y):
+        self.generator.train(x, y)
 
     def generate(self, output_file_dir, filename):
         values = self.generator.generateValue(self.sheet)#원래는 임의로 입력을 주어야함
@@ -38,30 +39,6 @@ class Bard():
     multi bard내용 이쪽으로 그리고 bard를 이용해서구현
     
     '''
-    # def multi_preprocess(self, directory):
-    #     sheets, headers = self.midi_tool.multi_parse_midi(directory)
-    #     self.make_tables(sheets)
-    #     self.generator = Generator(self.max_length, self.tables)
-    #     x_list, y_list = self.midi_tool.multi_preprocess(sheets)
-    #     return x_list, y_list
-    #
-    # def multi_train(self,x_list, y_list):
-    #     self.generator.train(x_list[0], y_list[0])
-    # def multi_generate(self):
-    #     pass
-    #
-    # def make_tables(self, sheets):
-    #     """
-    #     안으로 넣을수는 없을까?
-    #     """
-    #     tables = []
-    #     for sheet in sheets:
-    #         tables += list(set(sheet))
-    #
-    #     self.tables = sorted(list(set(tables)))
-    #     self.tables_indices = dict((t, i) for i, t in enumerate(self.tables))
-    #     self.indices_tables = dict((i, t) for i, t in enumerate(self.tables))
-
 
     def parse_midi(self, input_file_dir, output_file_dir):
         self.input_file_dir = input_file_dir
@@ -79,7 +56,7 @@ class Bard():
             print(midifile_list)
             # 파일이 없으면 종료 하는 루틴이 필요 할 듯
             for midifile in midifile_list:
-                sheet, header = self.midi_tool.parseMidi(midifile)
+                sheet, header = self.midi_tool.parse_midi(midifile)
                 sheets.append(sheet)
                 headers.append(header)
             return sheets, headers
@@ -107,8 +84,6 @@ class Bard():
         self.tables_indices = dict((t, i) for i, t in enumerate(self.tables))
         self.indices_tables = dict((i, t) for i, t in enumerate(self.tables))
 
-
-    # print self.indices_tables
 
     def mapping_data(self, sheet):
         """

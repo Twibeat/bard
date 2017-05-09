@@ -7,6 +7,9 @@ from keras.optimizers import RMSprop
 from keras.utils.data_utils import get_file
 import numpy as np
 
+from core.table import generate_table
+
+
 class Generator():
 	def __init__(self, max_length, values,lstm_dim = 2):
 		self.max_length = max_length
@@ -32,7 +35,6 @@ class Generator():
 		self.tables = sorted(list(set(tables)))
 		self.tables_indices = dict((t, i) for i, t in enumerate(self.tables))
 		self.indices_tables = dict((i, t) for i, t in enumerate(self.tables))
-
 
 	def sample(self, preds, temperature=1.0):
 	    """ 

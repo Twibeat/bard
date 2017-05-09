@@ -4,7 +4,6 @@ from fractions import Fraction
 import numpy as np
 import os
 import glob
-
 class MidiTool:
     def __init__(self, step=1, maxlen=16):
         """
@@ -14,7 +13,7 @@ class MidiTool:
         self.maxlen = maxlen
         self.step = step
 
-    def parseMidi(self, filename):
+    def parse_midi(self, filename):
         """
 		http://web.mit.edu/music21/doc/usersGuide/usersGuide_17_derivations.html	
 		sample.mid는 불러오면 Score이고 여러개의 Part로 구성된다. Part는 Voice로 구성되어 있다.
@@ -24,69 +23,31 @@ class MidiTool:
         if not os.path.exists(filename):
             print("file is none")
             exit()
+
         print("parse midi file...")
         score = converter.parse(filename)
+        header = stream.Part()
         for part in score:
             for voice in part:
                 if isinstance(voice, stream.Voice):
                     print("length: ", len(voice))
-                    return self.make_list(voice)
-
-    #일단 멀티로 만들고 사이즈 -> 이후에
-    def multi_parse_midi(self, directory):
-        sheets = []
-        headers = []
-
-        try:
-            if not os.path.exists(directory):
-                raise IOError
-
-            midifile_list = glob.glob(directory + "*.mid")
-            midifile_list += glob.glob(directory + "*.midi")
-
-            if midifile_list is []:
-                raise IOError
-            print(midifile_list)
-            for midifile in midifile_list:
-                print(midifile)
-                sheet, header = self.parseMidi(midifile)
-                sheets.append(sheet)
-                headers.append(sheet)
-
-            return sheets, headers
-
-        except IOError:
-            print(directory + " is nothing")
-            exit()
-
-    def multi_preprocess(self, sheets):
-        x_list = []
-        y_list = []
-
-        for sheet in sheets:
-            self.make_table(sheet)
-            self.mapping_data(sheet)
-            x,y = self.onehotEncoding()
-            x_list.append(x)
-            y_list.append(y)
-
-        return x_list, y_list
+                    return self.make_list(voice), header
+                header.insert(voice)
 
     def make_list(self, stream):
         """
 		voice는 note의 스트림임
 		"""
-        header_size = 3  # header가 3개가 아닐수도
         stream_to_list = []
 
-        for each_item in stream[header_size:]:
+        for each_item in stream:
             if isinstance(each_item, note.Note):
                 stream_to_list.append(
                     each_item.name + str(each_item.octave) + '/' + str(each_item.duration.quarterLength))
             elif isinstance(each_item, note.Rest):
                 stream_to_list.append(each_item.name + '/' + str(each_item.duration.quarterLength))
 
-        return stream_to_list, stream[0:header_size]
+        return stream_to_list#, stream[0:header_size]
 
     def preprocess(self, sheet):
         self.make_table(sheet)
@@ -124,33 +85,37 @@ class MidiTool:
 
         return x, y
 
-    def out_midi(self, dir, head, chords):
+    def out_midi(self, dir, header, chords):
         """생성된 char형태의 코드를 midi로 만들어줌"""
-        streams = stream.Stream()
-        for h in head:
-            streams.append(h)
+        score = stream.Score()
+        part = stream.Part()
+
+        for head in header:
+            part.insert(head)
+
+        voice = stream.Voice()
 
         for chord in chords:
             # 현재는 (음과 옥타브 / 음길이) 형태로 구분한다. 나누어 준다.
             chord = chord.split('/', 1)
             if chord[0] == "rest":
                 n = note.Rest(chord[0])
-                n = self.set_duration(n, chord[1])
-                streams.append(n)
             else:
                 n = note.Note(chord[0])
-                n = self.set_duration(n, chord[1])
-                streams.append(n);
+            n = self.set_duration(n, chord[1])
+            voice.append(n)
 
-        self.write_stream(dir, streams)
+        part.insert(voice)
+        score.insert(part)
+        self.write_stream(dir, score)
 
     def write_stream(self, dir, streams):
         """stream을 저장한다."""
         print("write stream...")
-        mf = midi.translate.streamToMidiFile(streams)
-        mf.open(dir, 'wb')
-        mf.write()
-        mf.close()
+        midi_file = midi.translate.streamToMidiFile(streams)
+        midi_file.open(dir, 'wb')
+        midi_file.write()
+        midi_file.close()
 
     def set_duration(self, note, duration):
         """

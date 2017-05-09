@@ -8,8 +8,7 @@ from PyQt5 import QtCore
 
 
 from qt5 import multiGUI5
-from core.multiBard import MultiBard
-from core import new_bard
+from core.bard import Bard
 """
 추가적인 파라미터 필요
 """
@@ -134,11 +133,11 @@ class BackgroundThread(QtCore.QThread):
         self.iteraion = iteraion
 
     def run(self):
-        bard = new_bard.Bard()
-        bard.preprocess(self.input_file_dir)
+        bard = Bard()
+        x, y = bard.preprocess(self.input_file_dir)
 
         for index in range(1, self.iteraion + 1):
-            bard.train()
+            bard.train(x, y)
 
             if(index % 10) == 0:
                 bard.generate(self.output_file_dir, 'iter' + str(index))
@@ -154,7 +153,7 @@ class BackgroundThreadTrain(QtCore.QThread):
 
     def run(self):
 
-        multibard = new_bard.Bard()
+        multibard = Bard()
         sheets, headers = multibard.parse_midi(self.input_file_dir, self.output_file_dir)
         x_list, y_list = multibard.multi_preprocess(sheets)
         multibard.init_generator(multibard.tables)
@@ -186,9 +185,9 @@ class BackgroundThreadGenerate(QtCore.QThread):
         """
         모든 파일의 경우의 수를 가지는 테이블을 만들지 못한다면 batch에 있던 파일중 하나로 sheet를 넘겨야 한다.
         """
-        multiBard = MultiBard()
+        multiBard = Bard()
         multiBard.load_tables(self.table_file_dir)
-        multiBard.init_generator(multiBard.tables)#정보은닉이 아닌데 이건..
+        multiBard.init_generator()#정보은닉이 아닌데 이건..
         multiBard.load_weights(self.weight_file_dir)
 
         sheet, header = multiBard.midi_tool.parseMidi(self.sample_file_dir)
