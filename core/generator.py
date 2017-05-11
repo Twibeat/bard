@@ -67,10 +67,12 @@ class Generator():
 		랜덤으로 시작위치를 정하니까 좀 그런듯 
 		-> 현재는 시작 위치를 기준으로 만든다.
 		"""
-		#start_index = random.randint(0, len(sheet) - preprocessed.maxlen -1)
-		#generated = sheet[start_index :start_index + preprocessed.maxlen]
+		#import random
+		#start_index = random.randint(0, len(sheet) - self.max_length -1)
+		#print(start_index)
+		#generated = sheet[start_index :start_index + self.max_length]
 		generated = sheet[0:self.max_length]
-		
+		print(generated)
 		#첫번째 멜로디를 넣을 것인가 여부 
 		#values = generated # 일단 안넣는다.
 		values = []

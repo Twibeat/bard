@@ -18,7 +18,6 @@ class MidiTool:
 		http://web.mit.edu/music21/doc/usersGuide/usersGuide_17_derivations.html	
 		sample.mid는 불러오면 Score이고 여러개의 Part로 구성된다. Part는 Voice로 구성되어 있다.
 		midi파일에서 최초의 Voice를 찾는다. 
-		=> 문제의 여지가 있다. 항상 Voice에서 피아노 멜로디가 있는게 아니라서 
 		"""
         if not os.path.exists(filename):
             print("file is none")
@@ -28,11 +27,25 @@ class MidiTool:
         score = converter.parse(filename)
         header = stream.Part()
         for part in score:
+            if len(part.voices) is 0:
+                return self.process_no_voice(header, part)
             for voice in part:
                 if isinstance(voice, stream.Voice):
                     print("length: ", len(voice))
                     return self.make_list(voice), header
-                header.insert(voice)
+
+        print("can not found notes!!")
+        exit()
+
+    def process_no_voice(self, header, part):
+        voice = stream.Voice()
+        for element in part:
+            if isinstance(element, note.Note) or isinstance(element, note.Rest):
+                voice.insert(element)
+        if len(voice) is 0:
+            print("can not found notes!")
+            exit()
+        return self.make_list(voice), header
 
     def make_list(self, stream):
         """
@@ -93,21 +106,25 @@ class MidiTool:
         for head in header:
             part.insert(head)
 
-        voice = stream.Voice()
+        voice = self.string_to_stream(chords)
 
+        part.insert(voice)
+        score.insert(part)
+        self.write_stream(dir, score)
+
+    def string_to_stream(self, chords):
+        voice = stream.Voice()
         for chord in chords:
             # 현재는 (음과 옥타브 / 음길이) 형태로 구분한다. 나누어 준다.
             chord = chord.split('/', 1)
             if chord[0] == "rest":
                 n = note.Rest(chord[0])
+                n = self.set_duration(n, chord[1])
             else:
                 n = note.Note(chord[0])
-            n = self.set_duration(n, chord[1])
+                n = self.set_duration(n, chord[1])
             voice.append(n)
-
-        part.insert(voice)
-        score.insert(part)
-        self.write_stream(dir, score)
+        return voice
 
     def write_stream(self, dir, streams):
         """stream을 저장한다."""
