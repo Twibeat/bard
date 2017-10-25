@@ -6,19 +6,23 @@ midi파일을 입력받아서 비슷한 느낌의 곡의 midi파일을 만들어
 ### 주요 사용 패키지
 keras, QT5(python3), music21
 
-
-### linux
+### linux 설정
 ```
 conda create -n keras python=3 keras qt5
 pip install music21
 ```
 
-### mac
+### OS X 설정
 ```
 conda create -n keras python=3 qt5
 conda install -c conda-forge keras=2.0.2
 conda install theano(theano를 backend로 사용한다면)
 pip install music21
+```
+
+### 실행하기
+```
+python GUI.py
 ```
 
 ### toDO
